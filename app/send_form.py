@@ -55,12 +55,13 @@ def main_2():
                 "quiz": quiz,
             }
 
-    file_name = "test_pic.jpeg"
+    file_name = "test_pic.gif"
     url = 'http://localhost:8000/api/form'
 
     files = {
                 'form': json.dumps(form),
-                'file': (file_name, open(file_name, 'rb'), 'image/jpeg'),
+                # 'file': (file_name, open(file_name, 'rb').read(), 'image/jpeg'),
+                'file': open(file_name, 'rb').read(),
             }
 
     r = requests.post(url, files=files)

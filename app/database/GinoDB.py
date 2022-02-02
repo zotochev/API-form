@@ -1,7 +1,10 @@
 import asyncio
 from gino import Gino
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from config import ASCEPT_IMGS
 
+import imghdr
+import io
 from datetime import date
 import json
 
@@ -57,7 +60,13 @@ class Forms(db.Model):
 async def insert_user(api_input: dict):
     def prepare_input(api_input):
         request_json = dict()
+
         request_json['file'] = api_input.files.get('file').body
+        # check if file is image
+        file = io.BytesIO(request_json['file'])
+        if imghdr.what(file).lower() not in ASCEPT_IMGS:
+            raise TypeError(f"Wrong file type: {api_input.files.get('file').type}")
+
         request_json['form'] = json.loads(api_input.files.get('form').body.decode('utf8'))
         return request_json
 
