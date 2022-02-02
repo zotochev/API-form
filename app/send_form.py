@@ -26,7 +26,7 @@ def main():
                 'form': json.dumps(form),
                 # 'file': (file_name, open(file_name, 'rb').read(), 'image/jpeg'),
                 'file': open(file_name, 'rb').read(),
-            }
+             }
 
     r = requests.post(url, files=files)
 

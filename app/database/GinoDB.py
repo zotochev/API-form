@@ -1,7 +1,6 @@
 import asyncio
 from gino import Gino
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-from config import ASCEPT_IMGS
+from sqlalchemy import Column, Integer, ForeignKey
 
 import imghdr
 import io
@@ -42,7 +41,7 @@ async def insert_user(api_input: dict):
 
         # check if file is image
         file = io.BytesIO(request_json['file'])
-        if imghdr.what(file).lower() not in ASCEPT_IMGS:
+        if imghdr.what(file).lower() not None:
             raise TypeError(f"Wrong file type: {api_input.files.get('file').type}")
 
         request_json['form'] = json.loads(api_input.files.get('form').body.decode('utf8'))
@@ -78,9 +77,3 @@ async def insert_user(api_input: dict):
                 fourth=forms_fourth,
                 fifth=forms_fifth,
             )
-
-
-if __name__ == "__main__":
-    #asyncio.run(main())
-
-    asyncio.run(insert_user(FILES))
