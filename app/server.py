@@ -1,25 +1,22 @@
 from sanic import Sanic, response
-from sanic.response import text
-from database.GinoDB import db, Forms, Users, insert_user
+from sanic.response import text, HTTPResponse
 import json
-
 import base64
 
+from database.GinoDB import db, Forms, Users, insert_user
+from config import API_POST_FORMS, DB_URL, SERVER_NAME
 
-def get_base64_encoded_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode('utf-8')
 
 def get_base64_encoded_image_bytes(image_bytes):
     return base64.b64encode(image_bytes).decode('utf-8')
 
 
-app = Sanic("MyHelloWorldApp")
+app = Sanic(SERVER_NAME)
 
 
 @app.listener("after_server_start")
 async def setup_db(app, loop):
-    await db.set_bind('postgresql://gino:9827357@127.0.0.1/gino')
+    await db.set_bind(DB_URL)
     await db.gino.create_all()
     app.ctx.db = db
 
@@ -62,10 +59,16 @@ async def hello_world(request):
     return response.html(result)
 
 
-@app.post("/api/form")
-async def hello_world(request):
+@app.post(API_POST_FORMS)
+async def post_form(request):
 
-    await insert_user(request)
+    try:
+        await insert_user(request)
+    except KeyError as ke:
+        return HTTPResponse(body='{'f"'KeyError': {ke}"'}', status=400)
+    except TypeError as te:
+        return HTTPResponse(body='{'f"'TypeError': {te}"'}', status=400)
+    except Exception as e:
+        return HTTPResponse(body='{'f"ServerError: {e}"'}', status=500)
 
-    # return то что отправляется автору запроса
-    return text('{xxxxxx}')
+    return HTTPResponse(status=200)

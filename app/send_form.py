@@ -64,7 +64,11 @@ def main_2():
             }
 
     r = requests.post(url, files=files)
-    print(r.text)
+
+    print(r)
+    print(r.headers)
+    print(r.ok)
+    print(f'|{r.text}|')
 
 
 if __name__ == "__main__":
