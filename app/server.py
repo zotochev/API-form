@@ -26,24 +26,6 @@ async def unsetup_db(app, loop):
     app.ctx.db.pop_bind().close()
 
 
-def create_table():
-    def insert_line():
-        line = ''
-        line += '<tr>'
-        for item in items:
-            line += '<th>'
-            line += 'item'
-            line += '</th>'
-        line += '</tr>'
-        return line
-
-    result = ''
-    result += '<table>'
-    for line in lines:
-        insert_line()
-    result += '</table>'
-
-
 @app.get("/")
 async def hello_world(request):
     result = ''
