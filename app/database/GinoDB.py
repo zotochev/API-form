@@ -55,16 +55,18 @@ class Forms(db.Model):
 
 
 async def insert_user(api_input: dict):
-#    await db.set_bind('postgresql://gino:9827357@127.0.0.1/gino')
-#    await db.gino.create_all()
+    def prepare_input(api_input):
+        request_json = dict()
+        request_json['file'] = api_input.files.get('file').body
+        request_json['form'] = json.loads(api_input.files.get('form').body.decode('utf8'))
+        return request_json
 
-    #api_input['form'] = json.loads(api_input['form'])
+    api_input = prepare_input(api_input)
 
     # TABLE users 
     users_name = api_input['form']['name']
     users_gender = bool(int(api_input['form']['gender']))
     users_birth_day = date.fromisoformat(api_input['form']['birth_day'])
-    #users_file = api_input['file'].read()
     users_file = api_input['file']
 
     user = await Users.create(
@@ -75,7 +77,6 @@ async def insert_user(api_input: dict):
             )
 
     # TABLE forms
-    print(api_input['form']['quiz'])
     forms_first = api_input['form']['quiz']['first']
     forms_secon = api_input['form']['quiz']['second']
     forms_third = api_input['form']['quiz']['third']
@@ -90,14 +91,6 @@ async def insert_user(api_input: dict):
                 fourth=forms_fourth,
                 fifth=forms_fifth,
             )
-
-#    all_users = await Users.query.gino.all()
-#    print([(x.id, x.name) for x in all_users])
-#    all_forms = await Forms.query.gino.all()
-#    print([(x.id, x.first) for x in all_forms])
-
-#    await db.pop_bind().close()
-
 
 
 async def main():

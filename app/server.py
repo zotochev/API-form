@@ -14,7 +14,6 @@ def get_base64_encoded_image_bytes(image_bytes):
     return base64.b64encode(image_bytes).decode('utf-8')
 
 
-
 app = Sanic("MyHelloWorldApp")
 
 
@@ -57,30 +56,16 @@ async def hello_world(request):
     all_users = await Users.query.gino.all()
     # print([(x.id, x.name) for x in all_users])
 
-    result += "\n".join(['<p>-' + str((x.id, x.name)) + f'<img src="data:image/jpeg;base64,{get_base64_encoded_image_bytes(x.image)}">''+ </p>' for x in all_users])
+    result += "\n".join(['<p>-' + str((x.id, x.name)) + f'<img src="data:image/jpeg;base64,{get_base64_encoded_image_bytes(x.image)}" height="30">''+ </p>' for x in all_users])
     result += "\n<p>---------</p>"
 
-    bs64 = get_base64_encoded_image('test_pic.jpeg')
-    result += f'<img src="data:image/jpeg;base64,{bs64}">'
-    #result += f'<img src="data:image/jpeg;base64,{get_base64_encoded_image_bytes(x.image)}">'
     return response.html(result)
 
 
 @app.post("/api/form")
 async def hello_world(request):
-    with open('outfile.jpg', 'wb') as outfile:
-        outfile.write(request.files.get('file').body)
-    test = json.loads(request.files.get('form').body.decode('utf8'))
 
-    request_json = dict()
-    request_json['file'] = request.files.get('file').body
-    request_json['form'] = json.loads(request.files.get('form').body.decode('utf8'))
+    await insert_user(request)
 
-    await insert_user(request_json)
-    print(type(test))
-    print(test)
-
-
-    #db.insert(request.json)
     # return то что отправляется автору запроса
     return text('{xxxxxx}')

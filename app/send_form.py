@@ -21,6 +21,23 @@ def main_1():
     print(response.text)
 
 
+# @dataclass
+# class QuizFields:
+#     first: str
+#     second: str
+#     third: str
+#     fourth: str
+#     fifth: str
+# 
+# 
+# @dataclass
+# class FormFields:
+#     name: str
+#     gender: str
+#     birth_day: str
+#     quiz: QuizFields
+
+
 def main_2():
     quiz = {
                 'first': "1Hello",
